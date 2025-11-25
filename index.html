@@ -1,0 +1,769 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspirationly - Daily Quotes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS Variables for Dark Red Theme - Keep this, only adjust Particles.js specific styles */
+        :root {
+            --bg-primary: #1a0b0b;
+            --bg-secondary: #2d0f0f;
+            --bg-card: #3a1414;
+            --accent-primary: #ff2a2a; /* RED */
+            --accent-secondary: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #f0c0c0;
+            --text-muted: #c89a9a;
+            --border-radius: 16px;
+            --transition: all 0.3s ease;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --gradient: linear-gradient(135deg, #ff2a2a 0%, #ff6b6b 100%);
+        }
+
+        /* Importing Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Particles.js Container (Replaced .floating-icons) */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1; /* Z-index is important to keep it behind the main content */
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            position: relative;
+            z-index: 10; /* Make sure content is above particles */
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .logo i {
+            font-size: 28px;
+        }
+
+        /* Category Dropdown */
+        .category-dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 42, 42, 0.3);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .dropdown-toggle:hover {
+            background: rgba(255, 42, 42, 0.1);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 10px;
+            margin-top: 10px;
+            min-width: 200px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-secondary);
+        }
+
+        .dropdown-item:hover, .dropdown-item.active {
+            background: rgba(255, 42, 42, 0.1);
+            color: var(--accent-primary);
+        }
+
+        /* Quote Card */
+        .quote-card {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 50px 40px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border: 1px solid rgba(255, 42, 42, 0.2);
+        }
+
+        .quote-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
+        }
+
+        .quote-wrapper {
+            position: relative;
+            max-width: 90%;
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 25px;
+            position: relative;
+            padding: 0 60px;
+            color: var(--text-primary);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Large Red Quotation Marks */
+        .quote-text::before, .quote-text::after {
+            content: '"';
+            font-size: 120px;
+            color: var(--accent-primary);
+            opacity: 0.7;
+            position: absolute;
+            font-family: serif;
+            line-height: 1;
+            text-shadow: 0 4px 8px rgba(255, 42, 42, 0.3);
+        }
+
+        .quote-text::before {
+            top: -40px;
+            left: 0;
+        }
+
+        .quote-text::after {
+            bottom: -80px;
+            right: 0;
+        }
+
+        .author-name {
+            font-size: 20px;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 30px;
+            position: relative;
+            padding-left: 30px;
+            font-weight: 500;
+        }
+
+        .author-name::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 2px;
+            background: var(--accent-primary);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .action-button {
+            background: var(--bg-secondary);
+            border: none;
+            color: var(--text-primary);
+            padding: 14px 25px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 42, 42, 0.2);
+        }
+
+        .action-button:hover {
+            background: var(--accent-primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 42, 42, 0.4);
+        }
+
+        .action-button:active {
+            transform: translateY(0);
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-button {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 42, 42, 0.2);
+            color: var(--text-primary);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: var(--transition);
+            font-size: 20px;
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background: var(--accent-primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 42, 42, 0.4);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .quote-pagination {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: 15px 30px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 42, 42, 0.2);
+        }
+
+        /* Auto Play Toggle */
+        .auto-play-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-secondary);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--accent-primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .quote-text {
+                font-size: 28px;
+                padding: 0 40px;
+            }
+            
+            .quote-text::before, .quote-text::after {
+                font-size: 80px;
+            }
+            
+            .quote-text::before {
+                top: -20px;
+            }
+            
+            .quote-text::after {
+                bottom: -50px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .action-button {
+                justify-content: center;
+            }
+            
+            .quote-card {
+                padding: 40px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .quote-text {
+                font-size: 24px;
+                padding: 0 30px;
+            }
+            
+            .quote-text::before, .quote-text::after {
+                font-size: 60px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .logo {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-fire"></i>
+                <span>Inspirationly</span>
+            </div>
+
+            <div class="category-dropdown">
+                <div class="dropdown-toggle" onclick="toggleDropdown()">
+                    <span id="current-category">Motivational</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="dropdown-menu" id="categoryMenu">
+                    </div>
+            </div>
+        </div>
+
+        <div class="quote-card">
+            <div class="quote-wrapper">
+                <div class="quote-text" id="quote-text">Loading Quote...</div>
+            </div>
+            <div class="author-name" id="author-name">- Author</div>
+            
+            <div class="action-buttons">
+                <button class="action-button" id="copy-btn">
+                    <i class="far fa-copy"></i>
+                    <span>Copy</span>
+                </button>
+                <button class="action-button" id="like-btn">
+                    <i class="far fa-heart"></i>
+                    <span>Like</span>
+                </button>
+            </div>
+
+            <div class="auto-play-toggle">
+                <span>Auto Play:</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="auto-play-toggle">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-button" id="prev-btn">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <div class="quote-pagination" id="pagination">
+                1/10
+            </div>
+
+            <button class="nav-button" id="next-btn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <script>
+        // Initialize particles background with Red color
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#ff2a2a" }, // Red Particle Color
+                shape: { type: "circle" },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#ff2a2a", // Red Line Color
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "repulse" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                }
+            }
+        });
+        
+        // Quote Data
+        const allQuotes = {
+            "Motivational": [
+                { quote: "You are never Too old to Reinvent yourself", author: "Steve Harvey" },
+                { quote: "The best way to predict the future is to create it.", author: "Peter Drucker" },
+                { quote: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+                { quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+                { quote: "Strive for progress, not perfection.", author: "Unknown" },
+                { quote: "Success is not final; failure is not fatal: It is the courage to continue that counts.", author: "Winston S. Churchill" },
+                { quote: "Your time is limited, so don't waste it living someone else's life.", author: "Steve Jobs" },
+                { quote: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+                { quote: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+                { quote: "Hardships often prepare ordinary people for an extraordinary destiny.", author: "C.S. Lewis" }
+            ],
+            "Inspirational": [
+                { quote: "Where there is a will, there is a way.", author: "Pauline Kael" },
+                { quote: "Action is the foundational key to all success.", author: "Pablo Picasso" },
+                { quote: "The mind is everything. What you think you become.", author: "Buddha" },
+                { quote: "It's not what happens to you, but how you react to it that matters.", author: "Epictetus" },
+                { quote: "The purpose of our lives is to be happy.", author: "Dalai Lama" },
+                { quote: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt" },
+                { quote: "We rise by lifting others.", author: "Robert Ingersoll" },
+                { quote: "Change your thoughts and you change your world.", author: "Norman Vincent Peale" },
+                { quote: "To be successful, you must accept all challenges that come your way.", author: "Mike Tyson" },
+                { quote: "Try to be a rainbow in someone's cloud.", author: "Maya Angelou" }
+            ],
+            "Love": [
+                { quote: "The greatest happiness of life is the conviction that we are loved; loved for ourselves, or rather, loved in spite of ourselves.", author: "Victor Hugo" },
+                { quote: "Love takes off masks that we fear we cannot live without and know we cannot live within.", author: "James Baldwin" },
+                { quote: "We loved with a love that was more than love.", author: "Edgar Allan Poe" },
+                { quote: "If you live to be a hundred, I want to live to be a hundred minus one day, so I never have to live without you.", author: "A. A. Milne" },
+                { quote: "You know you're in love when you can't fall asleep because reality is finally better than your dreams.", author: "Dr. Seuss" },
+                { quote: "The best thing to hold onto in life is each other.", author: "Audrey Hepburn" },
+                { quote: "A successful marriage requires falling in love many times, always with the same person.", author: "Mignon McLaughlin" },
+                { quote: "Being deeply loved by someone gives you strength, while loving someone deeply gives you courage.", author: "Lao Tzu" },
+                { quote: "I swear I couldn't love you more than I do right now, and yet I know I will tomorrow.", author: "Leo Christopher" },
+                { quote: "To love is nothing. To be loved is something. But to love and be loved, that's everything.", author: "T. Tolis" }
+            ],
+            "Wisdom": [
+                { quote: "The journey of a thousand miles begins with a single step.", author: "Lao Tzu" },
+                { quote: "Knowing others is intelligence; knowing yourself is true wisdom.", author: "Lao Tzu" },
+                { quote: "Never interrupt your enemy when he is making a mistake.", author: "Napoleon Bonaparte" },
+                { quote: "The price of anything is the amount of life you exchange for it.", author: "Henry David Thoreau" },
+                { quote: "An investment in knowledge pays the best interest.", author: "Benjamin Franklin" },
+                { quote: "It is the mark of an educated mind to be able to entertain a thought without accepting it.", author: "Aristotle" },
+                { quote: "The greatest enemy of knowledge is not ignorance, it is the illusion of knowledge.", author: "Stephen Hawking" },
+                { quote: "Listen to the whispers of the soul before they become the screams of the body.", author: "Unknown" },
+                { quote: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.", author: "Aristotle" },
+                { quote: "The measure of intelligence is the ability to change.", author: "Albert Einstein" }
+            ],
+            "Success": [
+                { quote: "Success is walking from failure to failure with no loss of enthusiasm.", author: "Winston S. Churchill" },
+                { quote: "The only place where success comes before work is in the dictionary.", author: "Vidal Sassoon" },
+                { quote: "Don't aim for success if you want it; just do what you love and believe in, and it will come naturally.", author: "David Frost" },
+                { quote: "Success usually comes to those who are too busy to be looking for it.", author: "Henry David Thoreau" },
+                { quote: "The road to success and the road to failure are almost exactly the same.", author: "Colin R. Davis" },
+                { quote: "Try not to become a man of success, but rather try to become a man of value.", author: "Albert Einstein" },
+                { quote: "Success is no accident. It is hard work, perseverance, learning, studying, sacrifice and most of all, love of what you are doing or learning to do.", author: "Pele" },
+                { quote: "The difference between a successful person and others is not a lack of strength, not a lack of knowledge, but rather a lack of will.", author: "Vince Lombardi" },
+                { quote: "Success is simply the result of proper planning, consistent effort, and having the courage to fail again and again.", author: "Unknown" },
+                { quote: "Develop success from failures. Discouragement and failure are two of the surest stepping stones to success.", author: "Dale Carnegie" }
+            ]
+        };
+
+        // App State
+        const categories = Object.keys(allQuotes);
+        const quotesPerCategory = 10;
+        const totalQuotes = categories.length * quotesPerCategory;
+        let currentQuoteIndex = 0;
+        let likedQuotes = new Set();
+        let autoPlayInterval = null;
+        const autoPlayDelay = 5000; // 5 seconds
+
+        // DOM Elements
+        const quoteTextElement = document.getElementById('quote-text');
+        const authorNameElement = document.getElementById('author-name');
+        const paginationElement = document.getElementById('pagination');
+        const currentCategoryElement = document.getElementById('current-category');
+        const categoryMenuElement = document.getElementById('categoryMenu');
+        const nextButton = document.getElementById('next-btn');
+        const prevButton = document.getElementById('prev-btn');
+        const copyButton = document.getElementById('copy-btn');
+        const likeButton = document.getElementById('like-btn');
+        const autoPlayToggle = document.getElementById('auto-play-toggle');
+        // const floatingIconsContainer = document.getElementById('floating-icons'); // Removed as Particles.js handles this
+
+        // Create floating icons (REMOVED: Particles.js replaces this)
+        /* function createFloatingIcons() {
+            // ... original implementation removed ...
+        } */
+
+        // Core Functions
+        function displayQuote() {
+            const categoryIndex = Math.floor(currentQuoteIndex / quotesPerCategory);
+            const localQuoteIndex = currentQuoteIndex % quotesPerCategory;
+            
+            const currentCategoryName = categories[categoryIndex];
+            const currentQuoteData = allQuotes[currentCategoryName][localQuoteIndex];
+
+            quoteTextElement.textContent = currentQuoteData.quote;
+            authorNameElement.textContent = `- ${currentQuoteData.author}`;
+            currentCategoryElement.textContent = currentCategoryName;
+            
+            updatePagination(localQuoteIndex + 1);
+            updateNavigationButtons();
+            updateLikeButton();
+        }
+
+        function updatePagination(localQuoteNumber) {
+            paginationElement.textContent = `${localQuoteNumber}/${quotesPerCategory}`;
+        }
+
+        function updateNavigationButtons() {
+            prevButton.disabled = currentQuoteIndex === 0;
+            nextButton.disabled = currentQuoteIndex === totalQuotes - 1;
+        }
+
+        function updateLikeButton() {
+            const isLiked = likedQuotes.has(currentQuoteIndex);
+            likeButton.innerHTML = isLiked 
+                ? '<i class="fas fa-heart"></i><span>Liked</span>' 
+                : '<i class="far fa-heart"></i><span>Like</span>';
+        }
+
+        // Auto Play Functions
+        function startAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+            }
+            
+            autoPlayInterval = setInterval(() => {
+                if (currentQuoteIndex < totalQuotes - 1) {
+                    currentQuoteIndex++;
+                } else {
+                    currentQuoteIndex = 0; // Loop back to start
+                }
+                displayQuote();
+            }, autoPlayDelay);
+        }
+
+        function stopAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+            }
+        }
+
+        function toggleAutoPlay() {
+            if (autoPlayToggle.checked) {
+                startAutoPlay();
+            } else {
+                stopAutoPlay();
+            }
+        }
+
+        // Event Handlers
+        function nextQuote() {
+            if (currentQuoteIndex < totalQuotes - 1) {
+                currentQuoteIndex++;
+                displayQuote();
+            }
+        }
+
+        function prevQuote() {
+            if (currentQuoteIndex > 0) {
+                currentQuoteIndex--;
+                displayQuote();
+            }
+        }
+
+        function toggleDropdown() {
+            categoryMenuElement.classList.toggle('show');
+        }
+
+        function changeCategory(newCategory) {
+            const localIndexInCurrentCategory = (currentQuoteIndex % quotesPerCategory);
+            const newCategoryIndex = categories.indexOf(newCategory);
+            const newStartIndex = newCategoryIndex * quotesPerCategory;
+            currentQuoteIndex = newStartIndex + localIndexInCurrentCategory;
+
+            categoryMenuElement.classList.remove('show');
+            displayQuote();
+        }
+
+        function populateCategories() {
+            categories.forEach(category => {
+                const item = document.createElement('div');
+                item.className = 'dropdown-item';
+                item.textContent = category;
+                item.onclick = (e) => {
+                    e.preventDefault();
+                    changeCategory(category);
+                };
+                categoryMenuElement.appendChild(item);
+            });
+        }
+
+        async function copyQuote() {
+            const quote = quoteTextElement.textContent;
+            const author = authorNameElement.textContent;
+            const textToCopy = `"${quote}" ${author}`;
+
+            try {
+                await navigator.clipboard.writeText(textToCopy);
+                
+                const originalHTML = copyButton.innerHTML;
+                copyButton.innerHTML = '<i class="fas fa-check"></i><span>Copied!</span>';
+                setTimeout(() => {
+                    copyButton.innerHTML = originalHTML;
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+            }
+        }
+
+        function toggleLike() {
+            if (likedQuotes.has(currentQuoteIndex)) {
+                likedQuotes.delete(currentQuoteIndex);
+            } else {
+                likedQuotes.add(currentQuoteIndex);
+            }
+            updateLikeButton();
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            // createFloatingIcons(); // Removed
+            populateCategories();
+            displayQuote();
+            
+            // Event listeners
+            nextButton.addEventListener('click', nextQuote);
+            prevButton.addEventListener('click', prevQuote);
+            copyButton.addEventListener('click', copyQuote);
+            likeButton.addEventListener('click', toggleLike);
+            autoPlayToggle.addEventListener('change', toggleAutoPlay);
+            
+            // Close dropdown when clicking outside
+            window.addEventListener('click', (e) => {
+                if (!e.target.closest('.category-dropdown')) {
+                    categoryMenuElement.classList.remove('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
